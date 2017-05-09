@@ -4,7 +4,7 @@ import {
   isSending
 } from '../src/bolt'
 
-describe('Bolt Middleware', () => {
+describe('Redux-Bolt Middleware', () => {
   const fakeUrl = 'http://0.0.0.0'
   const boltMiddleware = createBoltMiddleware(fakeUrl)
 
@@ -13,24 +13,24 @@ describe('Bolt Middleware', () => {
   })
 })
 
-describe('Bolt Helpers', () => {
-  it('Detects if the action is being sent to the server', () => {
+describe('Redux-Bolt Helpers', () => {
+  it('isSending can detect if the action is being sent to the server', () => {
     const action = {
       type: 'TEST_ACTION',
       socket: {
-        type: 'SEND'
+        type: 'send'
       }
     }
 
-    expect(isReceiving(action)).toBe(false)
     expect(isSending(action)).toBe(true)
+    expect(isReceiving(action)).toBe(false)
   })
 
-  it('Detects if the action is being received from the server', () => {
+  it('isReceiving can detect if the action is being received from the server', () => {
     const action = {
       type: 'TEST_ACTION',
       socket: {
-        type: 'RECEIVE'
+        type: 'receive'
       }
     }
 

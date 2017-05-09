@@ -79,7 +79,10 @@ export const createBoltMiddleware = (url, userOptions = {}) => {
  * @param action Redux action
  * @return bool
  */
-export const isReceiving = action => action[options.propName].type === options.types.receive
+export const isReceiving = action => {
+  console.log(action[options.propName].type, options.propName)
+  return action[options.propName].type === options.types.receive
+}
 
 /**
  * Checks if the action is beign sended to the server
