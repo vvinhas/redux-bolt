@@ -8,15 +8,17 @@ export default {
   socketOptions: {},
   propName: 'socket',
   clientInfo: {},
+  currentChannel: null,
   event: {
     connect: 'bolt_connect',
     action: 'bolt_action',
-    joinRoom: 'bolt_join_room',
-    leaveRoom: 'bolt_leave_room',
+    channel: 'bolt_channel_action',
+    joinChannel: 'bolt_join_channel',
+    leaveChannel: 'bolt_leave_channel',
     disconnect: 'bolt_disconnect',
   },
   actionType: {
-    send: 'bolt_action_send',
-    receive: 'bolt_action_receive',
+    send: 'send',
+    receive: 'receive',
   }
 }

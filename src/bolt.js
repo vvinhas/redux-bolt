@@ -1,4 +1,4 @@
-import io, { Socket } from 'socket.io-client'
+import io from 'socket.io-client'
 import defaultOptions from './defaultOptions'
 
 /**
@@ -6,23 +6,13 @@ import defaultOptions from './defaultOptions'
  * 
  * @type Socket
  */
-// let socket
+let socket
 
 /**
  * Global options
  * @type object
  */
 let options = defaultOptions
-
-/**
- * Default Socket Payload options
- * 
- * @type object 
- */
-const defaultSocketPayload = {
-  type: options.actionType.send,
-  event: options.event.action,
-}
 
 /**
  * Creates the middleware and sets the listener
@@ -32,53 +22,55 @@ const defaultSocketPayload = {
  * @return Store
  */
 export const createBoltMiddleware = (url, userOptions = {}) => {
+  // Update global options
+  options = {
+    ...options,
+    ...userOptions,
+    socketUrl: url
+  }
+  // Creates the socket
+  socket = io(options.socketUrl, options.socketOptions)
+
   return store => {
-    // We'll need to dispatch response actions when receiving actions from the server
+    // We'll need to dispatch response actions 
+    // when receiving actions from the server
     const { dispatch } = store
-    // Update the options
-    options = {
-      ...defaultOptions,
-      ...userOptions,
-      socketUrl: url
-    }
-    // Creates the socket
-    const socket = io(options.socketUrl, options.socketOptions)
+    const { propName } = options
+    // Emits a connection event
     socket.emit(options.event.connect, options)
     // Adds a listener to observe every Bolt event
-    const listener = socket.on(options.event.action, action => dispatch({
+    socket.on(options.event.action, action => dispatch({
       ...action,
-      [options.propName]: {
-        type: options.type.receive
+      [propName]: {
+        ...action[propName],
+        type: options.actionType.receive
       }
     }))
-    // If listener wasn't created properly, throw an error
-    if (!(listener instanceof Socket)) {
-      throw new Error(`The listener couldn't be created. Check the middleware configuration settings.`)
-    }
     
     // Bolt Middleware
     return next => action => {
       const { propName } = options
 
       if (action[propName]) {
-        // If prop is strictly set to true
-        // transform it into a object readable by Bolt
-        if (action[propName] === true) {
-          action = {
-            ...action,
-            [propName]: defaultSocketPayload
+        // If the action is a response, we're not interested
+        // Just let redux do it's job
+        if (action[propName].type === options.actionType.receive) {
+          return next(action)
+        }
+        // Transforms the action into a object readable by Bolt
+        action = {
+          ...action,
+          [propName]: {
+            ...action[propName],
+            type: options.actionType.send
           }
         }
-        
-        // Checks for aditional events
-        for (let eventName of Object.keys(options.events)) {
-          if (action[propName][eventName]) {
-            socket.emit(options.event[eventName], action[propName][eventName])
-          }
+        // Emits the event to a channel or globally
+        if (typeof options.currentChannel === 'string') {
+          socket.emit(options.event.channel, options.currentChannel, action)
+        } else {
+          socket.emit(options.event.action, action)
         }
-
-        // Emits the event
-        socket.emit(action[propName].event, action)
       }
 
       return next(action)
@@ -101,3 +93,29 @@ export const isReceiving = action => action[options.propName].type === options.a
  * @return bool
  */
 export const isSending = action => action[options.propName].type === options.actionType.send
+
+/**
+ * Emits an event informing the server to let 
+ * the socket join a determined room/channel
+ * 
+ * @param channel string Name of the channel
+ * @return bool
+ */
+export const joinChannel = channel => {
+  options = { ...options, currentChannel: channel }
+  socket.emit(options.event.joinChannel, channel)
+  return true
+}
+
+/**
+ * Emits an event informing the server to let 
+ * the socket leave a determined room/channel
+ * 
+ * @param channel string Name of the channel
+ * @return bool
+ */
+export const leaveChannel = () => {
+  socket.emit(options.event.leaveChannel, options.currentChannel)
+  options = { ...options, currentChannel: null }
+  return true
+}
