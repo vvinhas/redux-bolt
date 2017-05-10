@@ -3,6 +3,7 @@ import {
   isReceiving, 
   isSending
 } from '../src/bolt'
+import options from '../src/defaultOptions'
 
 describe('Redux-Bolt Middleware', () => {
   const fakeUrl = 'http://0.0.0.0'
@@ -11,14 +12,29 @@ describe('Redux-Bolt Middleware', () => {
   it('Should return a function', () => {
     expect(typeof boltMiddleware).toBe('function')
   })
+
+  it('Should be able to join rooms', () => {
+    const action = {
+      socket: {
+        joinRoom: 'chat-room'
+      }
+    }
+  })
+  
+  it('Should be able to leave rooms', () => {
+    const action = {
+      socket: {
+        leaveRoom: 'chat-room'
+      }
+    }
+  })
 })
 
 describe('Redux-Bolt Helpers', () => {
   it('isSending can detect if the action is being sent to the server', () => {
     const action = {
-      type: 'TEST_ACTION',
-      socket: {
-        type: 'send'
+      [options.propName]: {
+        type: options.actionType.send
       }
     }
 
@@ -28,9 +44,8 @@ describe('Redux-Bolt Helpers', () => {
 
   it('isReceiving can detect if the action is being received from the server', () => {
     const action = {
-      type: 'TEST_ACTION',
-      socket: {
-        type: 'receive'
+      [options.propName]: {
+        type: options.actionType.receive
       }
     }
 

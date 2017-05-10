@@ -1,25 +1,28 @@
 import io, { Socket } from 'socket.io-client'
+import defaultOptions from './defaultOptions'
 
 /**
- * Default options
+ * Client Socket instance
  * 
- * @type object
+ * @type Socket
  */
-const defaultOptions = {
-  socketUrl: 'http://localhost',
-  socketOptions: {},
-  eventName: 'bolt_action',
-  propName: 'socket',
-  types: {
-    send: 'send',
-    receive: 'receive'
-  }
-}
+// let socket
 
 /**
  * Global options
+ * @type object
  */
 let options = defaultOptions
+
+/**
+ * Default Socket Payload options
+ * 
+ * @type object 
+ */
+const defaultSocketPayload = {
+  type: options.actionType.send,
+  event: options.event.action,
+}
 
 /**
  * Creates the middleware and sets the listener
@@ -38,34 +41,44 @@ export const createBoltMiddleware = (url, userOptions = {}) => {
       ...userOptions,
       socketUrl: url
     }
-    console.log(options)
     // Creates the socket
     const socket = io(options.socketUrl, options.socketOptions)
+    socket.emit(options.event.connect, options)
     // Adds a listener to observe every Bolt event
-    const listener = socket.on(options.eventName, action => dispatch({
+    const listener = socket.on(options.event.action, action => dispatch({
       ...action,
       [options.propName]: {
-        type: options.types.receive
+        type: options.type.receive
       }
     }))
     // If listener wasn't created properly, throw an error
     if (!(listener instanceof Socket)) {
-      throw new Error(`The listener couldn't be created. Check middleware configuration settings.`)
+      throw new Error(`The listener couldn't be created. Check the middleware configuration settings.`)
     }
     
     // Bolt Middleware
     return next => action => {
-      // Checks for socket actions
-      if (action[options.propName] === true) {
-        // Transform the action
-        action = {
-          ...action,
-          [options.propName]: {
-            type: options.types.send
+      const { propName } = options
+
+      if (action[propName]) {
+        // If prop is strictly set to true
+        // transform it into a object readable by Bolt
+        if (action[propName] === true) {
+          action = {
+            ...action,
+            [propName]: defaultSocketPayload
           }
         }
+        
+        // Checks for aditional events
+        for (let eventName of Object.keys(options.events)) {
+          if (action[propName][eventName]) {
+            socket.emit(options.event[eventName], action[propName][eventName])
+          }
+        }
+
         // Emits the event
-        socket.emit(options.eventName, action)
+        socket.emit(action[propName].event, action)
       }
 
       return next(action)
@@ -79,10 +92,7 @@ export const createBoltMiddleware = (url, userOptions = {}) => {
  * @param action Redux action
  * @return bool
  */
-export const isReceiving = action => {
-  console.log(action[options.propName].type, options.propName)
-  return action[options.propName].type === options.types.receive
-}
+export const isReceiving = action => action[options.propName].type === options.actionType.receive
 
 /**
  * Checks if the action is beign sended to the server
@@ -90,4 +100,4 @@ export const isReceiving = action => {
  * @param action Redux action
  * @return bool
  */
-export const isSending = action => action[options.propName].type === options.types.send
+export const isSending = action => action[options.propName].type === options.actionType.send
