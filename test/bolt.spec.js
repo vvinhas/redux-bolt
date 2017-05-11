@@ -2,7 +2,7 @@ import {
   createBoltMiddleware, 
   isReceiving, 
   isSending
-} from '../src/bolt'
+} from '../src'
 import options from '../src/defaultOptions'
 
 describe('Redux-Bolt Middleware', () => {

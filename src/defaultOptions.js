@@ -6,6 +6,7 @@
 export default {
   socketUrl: 'http://localhost',
   socketOptions: {},
+  socketId: null,
   propName: 'socket',
   clientInfo: {},
   currentChannel: null,
@@ -20,5 +21,9 @@ export default {
   actionType: {
     send: 'send',
     receive: 'receive',
-  }
+  },
+  connectAction: socketId => ({
+    type: 'bolt_connect',
+    socketId
+  })
 }
