@@ -13,11 +13,10 @@ const createBoltMiddleware = (url, userOptions = {}) => {
   // Update options
   const options = {
     ...defaultOptions,
-    ...userOptions,
-    socketUrl: url
+    ...userOptions
   }
   // Creates the socket
-  const socket = io(options.socketUrl, options.socketOptions)
+  const socket = io(url, options.socketOptions)
 
   return store => {
     // We'll need to dispatch response actions 

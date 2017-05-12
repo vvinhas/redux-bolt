@@ -1,3 +1,8 @@
+/**
+ * Constants used by Redux Bolt
+ * 
+ * @type object
+ */
 export default {
   actions: {
     connect: 'Bolt/Connect',
