@@ -1,5 +1,3 @@
-import io from 'socket.io-client'
-import defaultOptions from './defaultOptions'
 import createBoltMiddleware from './createBoltMiddleware'
 import isReceiving from './isReceiving'
 import isSending from './isSending'

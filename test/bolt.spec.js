@@ -1,9 +1,12 @@
 import {
   createBoltMiddleware, 
   isReceiving, 
-  isSending
+  isSending,
+  joinChannel,
+  leaveChannel
 } from '../src'
 import options from '../src/defaultOptions'
+import * as Constants from '../src/constants'
 
 describe('Redux-Bolt Middleware', () => {
   const fakeUrl = 'http://0.0.0.0'
@@ -13,20 +16,24 @@ describe('Redux-Bolt Middleware', () => {
     expect(typeof boltMiddleware).toBe('function')
   })
 
-  it('Should be able to join rooms', () => {
-    const action = {
-      socket: {
-        joinRoom: 'chat-room'
-      }
+  it('Should be able to join a channel', () => {
+    const channel = 'test-channel'
+    const expected = {
+      type: Constants.actions.joinChannel,
+      channel
     }
+    
+    expect(joinChannel(channel)).toEqual(expected)
   })
   
-  it('Should be able to leave rooms', () => {
-    const action = {
-      socket: {
-        leaveRoom: 'chat-room'
-      }
+  it('Should be able to leave a channel', () => {
+    const channel = 'test-channel'
+    const expected = {
+      type: Constants.actions.leaveChannel,
+      channel
     }
+
+    expect(leaveChannel(channel)).toEqual(expected)
   })
 })
 
@@ -34,7 +41,7 @@ describe('Redux-Bolt Helpers', () => {
   it('isSending can detect if the action is being sent to the server', () => {
     const action = {
       [options.propName]: {
-        type: options.actionType.send
+        type: Constants.events.send
       }
     }
 
@@ -45,7 +52,7 @@ describe('Redux-Bolt Helpers', () => {
   it('isReceiving can detect if the action is being received from the server', () => {
     const action = {
       [options.propName]: {
-        type: options.actionType.receive
+        type: Constants.events.receive
       }
     }
 
