@@ -1,13 +1,15 @@
+import * as Constants from './constants'
+
 /**
- * Emits an event informing the server to let 
+ * Emits an action informing redux to let 
  * the socket join a determined room/channel
  * 
  * @param channel string Name of the channel
  * @return bool
  */
-const joinChannel = channel => {
-  socket.emit(options.event.joinChannel, channel)
-  return true
-}
+const joinChannel = channel => ({
+  type: Constants.actions.joinChannel,
+  channel
+})
 
 export default joinChannel
