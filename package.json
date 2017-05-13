@@ -1,11 +1,11 @@
 {
   "name": "redux-bolt",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "⚡️ Make your Redux actions real time using SocketIO",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "build": "babel src --out-dir dist"
+    "build": "babel src --out-dir lib"
   },
   "keywords": [
     "realtime",
@@ -13,7 +13,7 @@
     "middleware",
     "redux"
   ],
-  "author": "Vinicius Vinhas (http://github.com/vvinhas)",
+  "author": "Vinicius Vinhas <vinicius.vinhas@gmail.com> (http://github.com/vvinhas)",
   "license": "MIT",
   "dependencies": {
     "socket.io-client": "^2.0.1"
@@ -22,6 +22,7 @@
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-jest": "^20.0.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "cross-env": "^4.0.0",

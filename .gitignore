@@ -1,12 +1,9 @@
 .DS_Store
-
+.vscode
 node_modules
-npm-debug.log
-
-.nyc_output
-coverage
-*.lcov
-
 dist
 lib
+
+*.lcov
+npm-debug.log
 yarn.lock
