@@ -30,7 +30,7 @@ const createBoltMiddleware = (url, userOptions = {}) => {
       socketId: socket.id
     }))
     // Adds a listener to observe every Bolt event
-    socket.on(Constants.actions.wide, action => dispatch({
+    socket.on(Constants.actions.bolt, action => dispatch({
       ...action,
       [propName]: {
         ...action[propName],
@@ -42,7 +42,7 @@ const createBoltMiddleware = (url, userOptions = {}) => {
       // If it's an action to join or leave a channel
       if (action.type === Constants.actions.joinChannel
           || action.type === Constants.actions.leaveChannel) {
-        socket.emit(action.type, action)
+        socket.emit(action.type, action.channel)
         return next(action)
       }
 
@@ -59,11 +59,11 @@ const createBoltMiddleware = (url, userOptions = {}) => {
           ...action,
           [propName]: {
             ...action[propName],
-            type: options.actionType.send
+            type: Constants.events.send
           }
         }
         // Emits the event to a channel or system wide
-        const actionType = typeof boltAction[propName].channel === 'string' ? 'channel' : 'wide'
+        const actionType = typeof boltAction[propName].channel === 'string' ? 'channel' : 'bolt'
         socket.emit(Constants.actions[actionType], boltAction)
         // Returns the Bolt transformed action
         return next(boltAction)

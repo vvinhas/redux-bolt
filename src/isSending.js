@@ -6,10 +6,11 @@ import * as Constants from './constants'
  * @param action Redux action
  * @return bool
  */
-const isSending = action => {
-  return Object.keys(action)
-    .filter(prop => action[prop].type === Constants.events.send)
-    .length === 1
-}
+const isSending = action => 
+  typeof Object.keys(action).find(prop => 
+    action[prop].hasOwnProperty('type') ? 
+      action[prop].type === Constants.events.send 
+      : false
+  ) !== 'undefined'
 
 export default isSending
