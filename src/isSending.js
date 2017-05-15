@@ -4,8 +4,8 @@ import getBoltObject from './getBoltObject'
 /**
  * Checks if the action is beign sended to the server
  * 
- * @param action Redux action
- * @return bool
+ * @param {object} action Redux action
+ * @return {bool}
  */
 const isSending = action => {
   const boltObject = getBoltObject(action)

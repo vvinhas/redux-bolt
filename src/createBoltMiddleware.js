@@ -6,9 +6,9 @@ import getBoltObject from './getBoltObject'
 /**
  * Creates the middleware and sets the listener
  * 
- * @param url Host URL to SocketIO Server
- * @param userOptions Object to override default options
- * @return Store
+ * @param {string} url Host URL to SocketIO Server
+ * @param {object} userOptions Object to override default options
+ * @return {function} A Redux middleware function
  */
 const createBoltMiddleware = (url, userOptions = {}) => {
   // Update options

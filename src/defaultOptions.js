@@ -1,7 +1,7 @@
 /**
  * Default options
  * 
- * @type object
+ * @const {object}
  */
 export default {
   socketOptions: {},
