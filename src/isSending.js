@@ -1,4 +1,5 @@
 import * as Constants from './constants'
+import getBoltObject from './getBoltObject'
 
 /**
  * Checks if the action is beign sended to the server
@@ -6,11 +7,14 @@ import * as Constants from './constants'
  * @param action Redux action
  * @return bool
  */
-const isSending = action => 
-  typeof Object.keys(action).find(prop => 
-    action[prop].hasOwnProperty('type') ? 
-      action[prop].type === Constants.events.send 
-      : false
-  ) !== 'undefined'
+const isSending = action => {
+  const boltObject = getBoltObject(action)
+  
+  if (boltObject) {
+    return boltObject.type === Constants.types.send
+  }
+
+  return false
+}
 
 export default isSending

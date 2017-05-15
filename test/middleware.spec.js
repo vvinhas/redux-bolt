@@ -9,24 +9,4 @@ describe('Redux-Bolt Middleware', () => {
   it('Should return a function', () => {
     expect(typeof boltMiddleware).toBe('function')
   })
-
-  it('Should be able to join a channel', () => {
-    const channel = 'test-channel'
-    const expected = {
-      type: Constants.actions.joinChannel,
-      channel
-    }
-    
-    expect(joinChannel(channel)).toEqual(expected)
-  })
-  
-  it('Should be able to leave a channel', () => {
-    const channel = 'test-channel'
-    const expected = {
-      type: Constants.actions.leaveChannel,
-      channel
-    }
-
-    expect(leaveChannel(channel)).toEqual(expected)
-  })
 })

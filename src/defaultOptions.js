@@ -5,5 +5,6 @@
  */
 export default {
   socketOptions: {},
-  propName: 'bolt'
+  propName: 'bolt',
+  queueInterval: 1000
 }

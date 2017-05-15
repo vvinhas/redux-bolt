@@ -1,12 +1,19 @@
-import { isReceiving, isSending } from '../src'
 import options from '../src/defaultOptions'
-import * as Constants from '../src/constants'
+import { events, types } from '../src/constants'
+import getBoltObject from '../src/getBoltObject'
+import {
+  isReceiving, 
+  isSending, 
+  joinChannel, 
+  leaveChannel, 
+  toChannel 
+} from '../src'
 
 describe('Redux-Bolt Helpers', () => {
-  it('Should detect if the action is being sent to the server', () => {
+  it('Detects if the action is being SENT to the server', () => {
     const action = {
       [options.propName]: {
-        type: Constants.events.send
+        type: types.send
       }
     }
 
@@ -14,14 +21,60 @@ describe('Redux-Bolt Helpers', () => {
     expect(isReceiving(action)).toBe(false)
   })
 
-  it('Should detect if the action is being received from the server', () => {
+  it('Detects if the action is being RECEIVED from the server', () => {
     const action = {
       [options.propName]: {
-        type: Constants.events.receive
+        type: types.receive
       }
     }
 
     expect(isReceiving(action)).toBe(true)
     expect(isSending(action)).toBe(false)
+  })
+
+  it('Creates a Bolt Object to JOIN a channel', () => {
+    const channel = 'foobar'
+    const expected = {
+      type: types.send,
+      event: events.joinChannel,
+      channel
+    }
+
+    expect(joinChannel(channel)).toEqual(expected)
+  })
+
+  it('Creates a Bolt Object to LEAVE a channel', () => {
+    const channel = 'foobar'
+    const expected = {
+      type: types.send,
+      event: events.leaveChannel,
+      channel
+    }
+
+    expect(leaveChannel(channel)).toEqual(expected)
+  })
+  
+  it('Creates a Bolt Object to MESSAGE a channel', () => {
+    const channel = 'foobar'
+    const expected = {
+      type: types.send,
+      event: events.channelMessage,
+      channel
+    }
+    
+    expect(toChannel(channel)).toEqual(expected)
+  })
+
+  it('Can find a Bolt Object in a Action', () => {
+    const action = {
+      type: 'FOO_BAR',
+      foo: 'bar',
+      randomProp: {
+        type: types.send,
+        event: events.message
+      }
+    }
+
+    expect(getBoltObject(action)).toBe(action['randomProp'])
   })
 })
