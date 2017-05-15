@@ -1,8 +1,12 @@
 {
   "name": "redux-bolt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "⚡️ Make your Redux actions real time using SocketIO",
   "main": "lib/index.js",
+  "files": [
+      "lib",
+      "src"
+  ],
   "scripts": {
     "test": "jest",
     "build": "babel src --out-dir lib"
