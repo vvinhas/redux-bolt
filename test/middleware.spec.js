@@ -1,6 +1,4 @@
-import { createBoltMiddleware, joinChannel, leaveChannel } from '../src'
-import options from '../src/defaultOptions'
-import * as Constants from '../src/constants'
+import { createBoltMiddleware } from '../src'
 
 describe('Redux-Bolt Middleware', () => {
   const fakeUrl = 'http://0.0.0.0'
