@@ -1,4 +1,7 @@
-# Redux Bolt
+# ⚡️ Redux Bolt
+
+[![Travis](https://img.shields.io/travis/vvinhas/redux-bolt.svg?style=flat-square)](https://travis-ci.org/vvinhas/redux-bolt)
+[![npm](https://img.shields.io/npm/v/redux-bolt.svg?style=flat-square)](https://www.npmjs.com/package/redux-bolt)
 
 **Bolt** is a small middleware for Redux that let's you dispatch Redux Actions to a server running SocketIO. Your actions will then be replicated to all clients listening to that socket or to a specific channel.
 
