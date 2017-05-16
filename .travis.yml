@@ -2,8 +2,10 @@ language: node_js
 node_js:
   - "node"
 script:
-  - npm lint
-  - npm test
+  - yarn run lint
+  - yarn run test
+cache: yarn
 branches:
   only:
     - master
+    - develop
