@@ -13,9 +13,12 @@ export const types = {
  * @const {object}
  */
 export const events = {
-  connect: 'Bolt/Connect',
+  connected: 'Bolt/Connected',
+  disconnected: 'Bolt/Disconnected',
+  reconnected: 'Bolt/Reconnected',
+  error: 'Bolt/Error',
   message: 'Bolt/Message',
-  channelMessage: 'Bolt/Channel_Message',
   joinChannel: 'Bolt/Join_Channel',
-  leaveChannel: 'Bolt/Leave_Channel'
+  leaveChannel: 'Bolt/Leave_Channel',
+  channelMessage: 'Bolt/Channel_Message',
 }
