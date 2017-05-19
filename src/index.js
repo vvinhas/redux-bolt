@@ -4,6 +4,7 @@ import isSending from './isSending'
 import joinChannel from './joinChannel'
 import leaveChannel from './leaveChannel'
 import toChannel from './toChannel'
+import call from './call'
 
 export {
   createBoltMiddleware,
@@ -11,5 +12,6 @@ export {
   isSending,
   joinChannel,
   leaveChannel,
-  toChannel
+  toChannel,
+  call
 }

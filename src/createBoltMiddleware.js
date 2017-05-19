@@ -3,6 +3,7 @@ import { types, events } from './constants'
 import defaultOptions from './defaultOptions'
 import getBoltObject from './getBoltObject'
 import QueueManager from './queueManager'
+import message from './message'
 
 /**
  * Creates the middleware and sets the listener
@@ -42,7 +43,6 @@ const createBoltMiddleware = (url, userOptions = {}) => {
     // to inform the developer when some event
     // happend on the client side
     socket.on('connect', () => {
-      queue.release(send)
       dispatch({ type: events.connected })
     })
 
@@ -73,30 +73,29 @@ const createBoltMiddleware = (url, userOptions = {}) => {
       }
     }))
 
+    socket.on(events.call, call => {
+      const [action, args] = call
+      if (options.actionsMap.hasOwnProperty(action)) {
+        dispatch(options.actionsMap[action](...args))
+      }
+    })
+
     return next => action => {
       let boltProp = action[propName]
+
       switch (typeof boltProp) {
         // If it's a boolean, check to see if it's strictly set to true
         case 'boolean':
           if (boltProp === false) {
             return next(action)
           }
-          boltProp = {
-            event: events.message,
-            type: types.send
-          }
+          boltProp = message()
           break
         // If it's an object that is not a response
         // overrides the type property
         case 'object':
           if (boltProp.type === types.receive) {
             return next(action)
-          }
-          const event = boltProp.hasOwnProperty('event') ? boltProp.event : events.message
-          boltProp = {
-            ...boltProp,
-            type: types.send,
-            event
           }
           break
         // Anything else is discarted
