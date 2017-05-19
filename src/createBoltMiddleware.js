@@ -2,11 +2,12 @@ import io from 'socket.io-client'
 import { types, events } from './constants'
 import defaultOptions from './defaultOptions'
 import getBoltObject from './getBoltObject'
+import QueueManager from './queueManager'
 
 /**
  * Creates the middleware and sets the listener
  * 
- * @param {string} url Host URL to SocketIO Server
+ * @param {string} url URL to SocketIO Server
  * @param {object} userOptions Object to override default options
  * @return {function} A Redux middleware function
  */
@@ -16,31 +17,54 @@ const createBoltMiddleware = (url, userOptions = {}) => {
     ...defaultOptions,
     ...userOptions
   }
-  let connected = false
-  let error = false
-  let queuedActions = []
   // Creates the socket
   const socket = io(url, options.socketOptions)
-  // Function responsible for dispatching
-  // events to the server
-  const send = action => {
-    const boltObject = getBoltObject(action)
-    console.log('Dispatching Queued:', boltObject)
-    if (boltObject) {
-      socket.emit(boltObject.event, action)
-    }
-    return action
-  }
 
   return store => {
     // We'll need to dispatch response actions 
     // when receiving actions from the server
     const { dispatch } = store
     const { propName } = options
-    // Register a connection listener
-    socket.on('connect', () => connected = true)
-    socket.on('connect_error', connError => error = connError)
-    // Register the listener responsible for catching every Bolt event
+    // Store actions in the queue
+    // When there's no connection estabilished
+    // And release them once a connection is made
+    const queue = new QueueManager()
+    // The emmiter function
+    const send = action => {
+      const boltObject = getBoltObject(action)
+      if (boltObject) {
+        socket.emit(boltObject.event, action)
+      }
+      return true
+    }
+    // Registering common connection listeners
+    // Here we basically dispatch normal actions
+    // to inform the developer when some event
+    // happend on the client side
+    socket.on('connect', () => {
+      queue.release(send)
+      dispatch({ type: events.connected })
+    })
+
+    socket.on('reconnect', () => {
+      queue.release(send)
+      dispatch({ type: events.reconnected })
+    })
+
+    socket.on('disconnect', () => {
+      dispatch({ type: events.disconnected })
+    })
+
+    socket.on('connect_error', error => {
+      dispatch({ type: events.error, error })
+    })
+
+    socket.on('error', error => {
+      dispatch({ type: events.error, error })
+    })
+      
+    // Register the listener responsible 
+    // for catching every Bolt event
     socket.on(events.message, action => dispatch({
       ...action,
       [propName]: {
@@ -48,24 +72,6 @@ const createBoltMiddleware = (url, userOptions = {}) => {
         type: types.receive
       }
     }))
-    // Check for queued actions and dispatch'em socket is connected
-    // Or cancel the queue if there's an error
-    let queueCheck = setInterval(() => {
-      // If it's connected and there are queued actions, dispatch'em
-      if (connected) {
-        if (queuedActions.length > 0) {
-          queuedActions.forEach(action => send(action))
-          queuedActions = []
-        }
-        clearInterval(queueCheck)
-      }
-
-      // Check for errors
-      if (error) {
-        clearInterval(queueCheck)
-        throw new Error(error)
-      }
-    }, options.queueInterval)
 
     return next => action => {
       let boltProp = action[propName]
@@ -97,21 +103,24 @@ const createBoltMiddleware = (url, userOptions = {}) => {
         default:
           return next(action)
       }
-
+      // Now we override the transformed Bolt Object 
       action = {
         ...action,
         [propName]: {
           ...boltProp
         }
       }
-
-      if (!connected || error) {
-        console.log('Queuing Action', action)
-        queuedActions.push(action)
+      // We push the action to the queue manager
+      queue.push(action)
+      // If there's no connection, the action stays
+      // in the queue but the app keeps working
+      if (!socket.connected) {
         return next(action)
       }
-
-      return next(send(action))
+      // If there's a connection, we release the stack
+      queue.release(send)
+      
+      return next(action)
     }
   }
 }
