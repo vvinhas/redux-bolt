@@ -5,6 +5,7 @@ import joinChannel from './joinChannel'
 import leaveChannel from './leaveChannel'
 import toChannel from './toChannel'
 import call from './call'
+import broadcast from './broadcast'
 
 export {
   createBoltMiddleware,
@@ -13,5 +14,6 @@ export {
   joinChannel,
   leaveChannel,
   toChannel,
-  call
+  call,
+  broadcast
 }

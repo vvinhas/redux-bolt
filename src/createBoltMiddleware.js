@@ -7,7 +7,7 @@ import message from './message'
 
 /**
  * Creates the middleware and sets the listener
- * 
+ *
  * @param {string} url URL to SocketIO Server
  * @param {object} userOptions Object to override default options
  * @return {function} A Redux middleware function
@@ -22,7 +22,7 @@ const createBoltMiddleware = (url, userOptions = {}) => {
   const socket = io(url, options.socketOptions)
 
   return store => {
-    // We'll need to dispatch response actions 
+    // We'll need to dispatch response actions
     // when receiving actions from the server
     const { dispatch } = store
     const { propName } = options
@@ -62,16 +62,25 @@ const createBoltMiddleware = (url, userOptions = {}) => {
     socket.on('error', error => {
       dispatch({ type: events.error, error })
     })
-      
-    // Register the listener responsible 
+
+    // Register the listener responsible
     // for catching every Bolt event
-    socket.on(events.message, action => dispatch({
-      ...action,
-      [propName]: {
-        ...action[propName],
-        type: types.receive
+    socket.on(events.message, action =>
+      dispatch({
+        ...action,
+        [propName]: {
+          ...action[propName],
+          type: types.receive
+        }
+      })
+    )
+
+    socket.on(events.broadcast, broadcast => {
+      const [action, args] = broadcast
+      if (options.listeners.hasOwnProperty(action)) {
+        dispatch(options.listeners[action](...args))
       }
-    }))
+    })
 
     socket.on(events.call, call => {
       const [action, args] = call
@@ -102,7 +111,7 @@ const createBoltMiddleware = (url, userOptions = {}) => {
         default:
           return next(action)
       }
-      // Now we override the transformed Bolt Object 
+      // Now we override the transformed Bolt Object
       action = {
         ...action,
         [propName]: {
@@ -118,7 +127,7 @@ const createBoltMiddleware = (url, userOptions = {}) => {
       }
       // If there's a connection, we release the stack
       queue.release(send)
-      
+
       return next(action)
     }
   }
