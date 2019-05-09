@@ -4,6 +4,7 @@ import defaultOptions from './defaultOptions'
 import getBoltObject from './getBoltObject'
 import QueueManager from './queueManager'
 import message from './message'
+import * as Handlers from './handlers'
 
 /**
  * Creates the middleware and sets the listener
@@ -74,6 +75,8 @@ const createBoltMiddleware = (url, userOptions = {}) => {
         }
       })
     )
+
+    socket.on(events.trigger, Handlers.triggerHandler)
 
     socket.on(events.broadcast, broadcast => {
       const [action, args] = broadcast

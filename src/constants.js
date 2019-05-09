@@ -21,5 +21,6 @@ export const events = {
   joinChannel: 'Bolt/Join_Channel',
   leaveChannel: 'Bolt/Leave_Channel',
   call: 'Bolt/Call',
-  broadcast: 'Bolt/Broadcast'
+  broadcast: 'Bolt/Broadcast',
+  trigger: 'Bolt/Trigger'
 }
