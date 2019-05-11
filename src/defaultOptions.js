@@ -8,5 +8,6 @@ export default {
   propName: 'bolt',
   queueInterval: 1000,
   actionsMap: {},
-  listeners: {}
+  listeners: {},
+  handlers: []
 }

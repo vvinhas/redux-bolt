@@ -7,3 +7,6 @@
   - Cada handler deve estar isolada em uma função testável
   - Preciso criar um `registerEvents` passando o `dispatch` para
     dentro de cada handler
+- Remover call e broadcast (refatorar para trigger)
+- Criar uma forma de extender handlers para novas actions (extensions)
+  - Permitir ao dev passar handlers como Options

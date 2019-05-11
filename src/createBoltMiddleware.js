@@ -4,7 +4,8 @@ import defaultOptions from './defaultOptions'
 import getBoltObject from './getBoltObject'
 import QueueManager from './queueManager'
 import message from './message'
-import * as Handlers from './handlers'
+import * as Messages from './messages'
+import boltHandlers from './handlers'
 
 /**
  * Creates the middleware and sets the listener
@@ -19,6 +20,7 @@ const createBoltMiddleware = (url, userOptions = {}) => {
     ...defaultOptions,
     ...userOptions
   }
+
   // Creates the socket
   const socket = io(url, options.socketOptions)
 
@@ -76,8 +78,6 @@ const createBoltMiddleware = (url, userOptions = {}) => {
       })
     )
 
-    socket.on(events.trigger, Handlers.triggerHandler)
-
     socket.on(events.broadcast, broadcast => {
       const [action, args] = broadcast
       if (options.listeners.hasOwnProperty(action)) {
@@ -90,6 +90,16 @@ const createBoltMiddleware = (url, userOptions = {}) => {
       if (options.actionsMap.hasOwnProperty(action)) {
         dispatch(options.actionsMap[action](...args))
       }
+    })
+
+    const socketHandlers = [...options.handlers, ...boltHandlers]
+    // Registering user and default SocketIO handlers
+    socketHandlers.map(({ event, handler }) => {
+      if (!event || !handler) {
+        throw new Exception(Messages.errors.invalidHandler)
+      }
+      // Register the event handler
+      socket.on(event, handler(options)(dispatch))
     })
 
     return next => action => {
