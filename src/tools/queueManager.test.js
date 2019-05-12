@@ -1,10 +1,10 @@
-import QueueManager from '../src/queueManager'
+import QueueManager from './queueManager'
 
 describe('Queue Manager', () => {
   const queue = new QueueManager()
   const tasks = [
-    {type: 'QUEUE_TEST', text: 'Foo' },
-    {type: 'QUEUE_TEST', text: 'Bar' }
+    { type: 'QUEUE_TEST', text: 'Foo' },
+    { type: 'QUEUE_TEST', text: 'Bar' }
   ]
 
   it('Let you push tasks to the queue', () => {

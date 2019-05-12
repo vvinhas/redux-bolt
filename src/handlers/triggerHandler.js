@@ -1,7 +1,12 @@
 import { events } from '../constants'
 import * as Messages from '../messages'
 
-export const triggerHandler = options => dispatch => action => {
+/**
+ * Handler responsible for dispatching mapped
+ * bolt listeners whenever there's a trigger beign
+ * called by one of the users
+ */
+export const triggerHandler = ({ dispatch, options }) => action => {
   const { trigger } = action.bolt
 
   try {

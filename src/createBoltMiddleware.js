@@ -2,8 +2,8 @@ import io from 'socket.io-client'
 import { types, events } from './constants'
 import * as Messages from './messages'
 import defaultOptions from './defaultOptions'
-import getBoltObject from './getBoltObject'
-import QueueManager from './queueManager'
+import dispatcher from './tools/dispatcher'
+import queue from './queue'
 import { message } from './actions'
 import boltHandlers from './handlers'
 
@@ -23,69 +23,22 @@ const createBoltMiddleware = (url, userOptions = {}) => {
 
   // Creates the socket
   const socket = io(url, options.socketOptions)
+  const releaser = dispatcher(socket)
 
   return store => {
     // We'll need to dispatch response actions
     // when receiving actions from the server
     const { dispatch } = store
     const { propName } = options
-    // Store actions in the queue
-    // When there's no connection estabilished
-    // And release them once a connection is made
-    const queue = new QueueManager()
-    // The emmiter function
-    const send = action => {
-      const boltObject = getBoltObject(action)
-      if (boltObject) {
-        socket.emit(boltObject.event, action)
-      }
-      return true
-    }
-    // Registering common connection listeners
-    // Here we basically dispatch normal actions
-    // to inform the developer when some event
-    // happend on the client side
-    socket.on('connect', () => {
-      dispatch({ type: events.connected })
-    })
 
-    socket.on('reconnect', () => {
-      queue.release(send)
-      dispatch({ type: events.reconnected })
-    })
-
-    socket.on('disconnect', () => {
-      dispatch({ type: events.disconnected })
-    })
-
-    socket.on('connect_error', error => {
-      dispatch({ type: events.error, error })
-    })
-
-    socket.on('error', error => {
-      dispatch({ type: events.error, error })
-    })
-
-    // Register the listener responsible
-    // for catching every Bolt event
-    socket.on(events.message, action =>
-      dispatch({
-        ...action,
-        [propName]: {
-          ...action[propName],
-          type: types.receive
-        }
-      })
-    )
-
-    const socketHandlers = [...options.handlers, ...boltHandlers]
     // Registering user and default SocketIO handlers
+    const socketHandlers = [...options.handlers, ...boltHandlers]
     socketHandlers.map(({ event, handler }) => {
       if (!event || !handler) {
         throw new Exception(Messages.errors.invalidHandler)
       }
       // Register the event handler
-      socket.on(event, handler(options)(dispatch))
+      socket.on(event, handler({ socket, dispatch, options }))
     })
 
     return next => action => {
@@ -125,7 +78,7 @@ const createBoltMiddleware = (url, userOptions = {}) => {
         return next(action)
       }
       // If there's a connection, we release the stack
-      queue.release(send)
+      queue.release(releaser)
 
       return next(action)
     }
