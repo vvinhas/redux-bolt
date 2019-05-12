@@ -10,3 +10,4 @@
 - Remover call e broadcast (refatorar para trigger)
 - Criar uma forma de extender handlers para novas actions (extensions)
   - Permitir ao dev passar handlers como Options
+- Atualizar o README

@@ -1,4 +1,4 @@
-import * as Constants from './constants'
+import * as Constants from '../constants'
 
 /**
  * Trigger an event informing bolt to call
@@ -8,10 +8,8 @@ import * as Constants from './constants'
  * containing info about the listeners to be called
  * @param {*} args Arguments used by the event listener
  */
-const trigger = (listener, ...args) => ({
+export default (listener, ...args) => ({
   type: Constants.types.send,
-  event: Constants.events.call,
+  event: Constants.events.trigger,
   trigger: typeof listener === 'array' ? listener : [{ listener, args }]
 })
-
-export default trigger

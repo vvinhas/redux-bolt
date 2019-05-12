@@ -7,12 +7,17 @@ export const triggerHandler = options => dispatch => action => {
   try {
     // Checks whether the object returned contains an
     // array of listeners to call
-    if (typeof trigger !== 'array') {
-      throw new Exception(Messages.errors.triggerObjectMalformed)
+    if (!Array.isArray(trigger) || trigger.length <= 0) {
+      throw Messages.errors.triggerObjectMalformed
     }
 
     trigger.map(listenerObj => {
       const { listener, args } = listenerObj
+      // If there's no listener, throws an error
+      if (!listener) {
+        throw Messages.errors.triggerObjectMalformed
+      }
+
       if (options.listeners.hasOwnProperty(listener)) {
         dispatch(options.listeners[listener](...args))
       }
@@ -23,6 +28,6 @@ export const triggerHandler = options => dispatch => action => {
 }
 
 export default {
-  event: events.trigger
+  event: events.trigger,
   handler: triggerHandler
 }

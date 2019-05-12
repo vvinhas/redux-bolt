@@ -1,10 +1,10 @@
 import io from 'socket.io-client'
 import { types, events } from './constants'
+import * as Messages from './messages'
 import defaultOptions from './defaultOptions'
 import getBoltObject from './getBoltObject'
 import QueueManager from './queueManager'
-import message from './message'
-import * as Messages from './messages'
+import { message } from './actions'
 import boltHandlers from './handlers'
 
 /**
@@ -77,20 +77,6 @@ const createBoltMiddleware = (url, userOptions = {}) => {
         }
       })
     )
-
-    socket.on(events.broadcast, broadcast => {
-      const [action, args] = broadcast
-      if (options.listeners.hasOwnProperty(action)) {
-        dispatch(options.listeners[action](...args))
-      }
-    })
-
-    socket.on(events.call, call => {
-      const [action, args] = call
-      if (options.actionsMap.hasOwnProperty(action)) {
-        dispatch(options.actionsMap[action](...args))
-      }
-    })
 
     const socketHandlers = [...options.handlers, ...boltHandlers]
     // Registering user and default SocketIO handlers

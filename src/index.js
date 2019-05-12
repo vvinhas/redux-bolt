@@ -1,11 +1,13 @@
 import createBoltMiddleware from './createBoltMiddleware'
-import isReceiving from './isReceiving'
-import isSending from './isSending'
-import joinChannel from './joinChannel'
-import leaveChannel from './leaveChannel'
-import toChannel from './toChannel'
-import call from './call'
-import broadcast from './broadcast'
+import {
+  isReceiving,
+  isSending,
+  joinChannel,
+  leaveChannel,
+  message,
+  toChannel,
+  trigger
+} from './actions'
 
 export {
   createBoltMiddleware,
@@ -13,7 +15,7 @@ export {
   isSending,
   joinChannel,
   leaveChannel,
+  message,
   toChannel,
-  call,
-  broadcast
+  trigger
 }
