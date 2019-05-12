@@ -1,5 +1,5 @@
 import * as Constants from '../constants'
-import getBoltObject from '../getBoltObject'
+import getBoltObject from '../tools/getBoltObject'
 
 /**
  * Checks if the action is beign received from the server

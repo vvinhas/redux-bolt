@@ -10,7 +10,9 @@
   "scripts": {
     "test": "jest --forceExit",
     "lint": "eslint src test",
-    "build": "babel src --out-dir lib"
+    "build": "babel src --out-dir lib --ignore '**/*.test.js'",
+    "test:coverage": "jest --coverage",
+    "test:report": "open ./coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,12 @@
   "license": "MIT",
   "dependencies": {
     "socket.io-client": "^2.2.0"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",

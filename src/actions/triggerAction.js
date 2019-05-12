@@ -11,5 +11,5 @@ import * as Constants from '../constants'
 export default (listener, ...args) => ({
   type: Constants.types.send,
   event: Constants.events.trigger,
-  trigger: typeof listener === 'array' ? listener : [{ listener, args }]
+  trigger: Array.isArray(listener) ? listener : [{ listener, args }]
 })
