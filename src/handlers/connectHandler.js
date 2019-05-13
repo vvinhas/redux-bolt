@@ -6,7 +6,7 @@ import { events } from '../constants'
  */
 export default {
   event: 'connect',
-  handler: ({ dispatch }) => action =>
+  handler: ({ dispatch }) => () =>
     dispatch({
       type: events.connected
     })

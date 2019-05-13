@@ -7,29 +7,25 @@ import * as Messages from '../messages'
  * called by one of the users
  */
 export const triggerHandler = ({ dispatch, options }) => action => {
-  const { trigger } = action.bolt
+  const { trigger } = action[options.propName]
 
-  try {
-    // Checks whether the object returned contains an
-    // array of listeners to call
-    if (!Array.isArray(trigger) || trigger.length <= 0) {
+  // Checks whether the object returned contains an
+  // array of listeners to call
+  if (!Array.isArray(trigger) || trigger.length <= 0) {
+    throw Messages.errors.triggerObjectMalformed
+  }
+
+  trigger.map(listenerObj => {
+    const { listener, args } = listenerObj
+    // If there's no listener, throws an error
+    if (!listener) {
       throw Messages.errors.triggerObjectMalformed
     }
 
-    trigger.map(listenerObj => {
-      const { listener, args } = listenerObj
-      // If there's no listener, throws an error
-      if (!listener) {
-        throw Messages.errors.triggerObjectMalformed
-      }
-
-      if (options.listeners.hasOwnProperty(listener)) {
-        dispatch(options.listeners[listener](...args))
-      }
-    })
-  } catch (e) {
-    console.error(e)
-  }
+    if (options.listeners.hasOwnProperty(listener)) {
+      dispatch(options.listeners[listener](...args))
+    }
+  })
 }
 
 export default {
