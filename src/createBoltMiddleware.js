@@ -1,5 +1,4 @@
-import io from 'socket.io-client'
-import { types, events } from './constants'
+import { types } from './constants'
 import * as Messages from './messages'
 import defaultOptions from './defaultOptions'
 import dispatcher from './tools/dispatcher'
@@ -14,15 +13,13 @@ import boltHandlers from './handlers'
  * @param {object} userOptions Object to override default options
  * @return {function} A Redux middleware function
  */
-const createBoltMiddleware = (url, userOptions = {}) => {
+const createBoltMiddleware = (socket, userOptions = {}) => {
   // Update options
   const options = {
     ...defaultOptions,
     ...userOptions
   }
 
-  // Creates the socket
-  const socket = io(url, options.socketOptions)
   const releaser = dispatcher(socket)
 
   return store => {

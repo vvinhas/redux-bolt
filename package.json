@@ -26,9 +26,6 @@
   ],
   "author": "Vinicius Vinhas <vinicius.vinhas@gmail.com> (http://github.com/vvinhas)",
   "license": "MIT",
-  "dependencies": {
-    "socket.io-client": "^2.2.0"
-  },
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
