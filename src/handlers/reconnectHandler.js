@@ -7,8 +7,8 @@ import dispatcher from '../tools/dispatcher'
  */
 export default {
   event: 'reconnect',
-  handler: ({ socket, dispatch, queue }) => () => {
-    queue.release(dispatcher(socket))
+  handler: ({ socket, dispatch, options: { queueManager } }) => () => {
+    queueManager.release(dispatcher(socket))
     dispatch({
       type: events.reconnected
     })

@@ -9,8 +9,10 @@ describe('[Handler] reconnect', () => {
   it('Must dispatch an action containing a reconnection event', () => {
     const mockedBoltObject = {
       dispatch: jest.fn(),
-      queue: { release: jest.fn() },
-      socket: { emit: () => null }
+      socket: { emit: () => null },
+      options: {
+        queueManager: { release: jest.fn() }
+      }
     }
 
     reconnectHandler.handler(mockedBoltObject)()
@@ -19,6 +21,8 @@ describe('[Handler] reconnect', () => {
     expect(mockedBoltObject.dispatch.mock.calls[0][0]).toEqual({
       type: events.reconnected
     })
-    expect(mockedBoltObject.queue.release.mock.calls.length).toBe(1)
+    expect(
+      mockedBoltObject.options.queueManager.release.mock.calls.length
+    ).toBe(1)
   })
 })

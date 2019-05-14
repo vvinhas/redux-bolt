@@ -1,7 +1,6 @@
 import { types } from './constants'
 import defaultOptions from './defaultOptions'
 import dispatcher from './tools/dispatcher'
-import QueueManager from './tools/queueManager'
 import { message } from './actions'
 import boltHandlers from './handlers'
 import * as Messages from './messages'
@@ -21,22 +20,21 @@ const createBoltMiddleware = (socket, userOptions = {}) => {
   }
 
   const releaser = dispatcher(socket)
-  const queue = new QueueManager()
 
   return store => {
     // We'll need to dispatch response actions
     // when receiving actions from the server
     const { dispatch } = store
-    const { propName } = options
+    const { propName, queueManager } = options
 
     // Registering user and default SocketIO handlers
     const socketHandlers = [...options.handlers, ...boltHandlers]
     socketHandlers.map(({ event, handler }) => {
       if (!event || !handler) {
-        throw new Exception(Messages.errors.invalidHandler)
+        throw Messages.errors.invalidHandler
       }
       // Register the event handler
-      socket.on(event, handler({ socket, dispatch, queue, options }))
+      socket.on(event, handler({ socket, dispatch, options }))
     })
 
     return next => action => {
@@ -69,14 +67,14 @@ const createBoltMiddleware = (socket, userOptions = {}) => {
         }
       }
       // We push the action to the queue manager
-      queue.push(action)
+      queueManager.push(action)
       // If there's no connection, the action stays
       // in the queue but the app keeps working
       if (!socket.connected) {
         return next(action)
       }
       // If there's a connection, we release the stack
-      queue.release(releaser)
+      queueManager.release(releaser)
 
       return next(action)
     }
