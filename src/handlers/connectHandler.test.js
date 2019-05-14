@@ -1,7 +1,7 @@
 import { events } from '../constants'
 import connectHandler from './connectHandler'
 
-describe('[Handler] connectHandler', () => {
+describe('[Handler] connect', () => {
   it('Must handle the `connect` event', () => {
     expect(connectHandler.event).toBe('connect')
   })
@@ -10,7 +10,7 @@ describe('[Handler] connectHandler', () => {
     const mockDispatch = jest.fn()
 
     connectHandler.handler({ dispatch: mockDispatch })()
-    
+
     expect(mockDispatch.mock.calls.length).toBe(1)
     expect(mockDispatch.mock.calls[0][0]).toEqual({
       type: events.connected

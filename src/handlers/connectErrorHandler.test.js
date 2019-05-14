@@ -1,7 +1,7 @@
 import { events } from '../constants'
 import connectErrorHandler from './connectErrorHandler'
 
-describe('[Handler] connectErrorHandler', () => {
+describe('[Handler] connectError', () => {
   it('Must handle the `connect_error` event', () => {
     expect(connectErrorHandler.event).toBe('connect_error')
   })

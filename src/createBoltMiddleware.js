@@ -1,10 +1,10 @@
 import { types } from './constants'
-import * as Messages from './messages'
 import defaultOptions from './defaultOptions'
 import dispatcher from './tools/dispatcher'
-import queue from './queue'
+import QueueManager from './tools/queueManager'
 import { message } from './actions'
 import boltHandlers from './handlers'
+import * as Messages from './messages'
 
 /**
  * Creates the middleware and sets the listener
@@ -21,6 +21,7 @@ const createBoltMiddleware = (socket, userOptions = {}) => {
   }
 
   const releaser = dispatcher(socket)
+  const queue = new QueueManager()
 
   return store => {
     // We'll need to dispatch response actions
@@ -35,7 +36,7 @@ const createBoltMiddleware = (socket, userOptions = {}) => {
         throw new Exception(Messages.errors.invalidHandler)
       }
       // Register the event handler
-      socket.on(event, handler({ socket, dispatch, options }))
+      socket.on(event, handler({ socket, dispatch, queue, options }))
     })
 
     return next => action => {

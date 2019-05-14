@@ -1,5 +1,4 @@
 import { events } from '../constants'
-import { queue } from '../queue'
 import dispatcher from '../tools/dispatcher'
 
 /**
@@ -8,7 +7,7 @@ import dispatcher from '../tools/dispatcher'
  */
 export default {
   event: 'reconnect',
-  handler: ({ socket, dispatch }) => action => {
+  handler: ({ socket, dispatch, queue }) => () => {
     queue.release(dispatcher(socket))
     dispatch({
       type: events.reconnected

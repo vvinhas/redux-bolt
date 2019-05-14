@@ -10,31 +10,54 @@ const mockOptions = {
   }
 }
 
-describe('[Handler] triggerHandler', () => {
-  it("Returns a trigger event", () => {
+describe('[Handler] trigger', () => {
+  it('Returns a trigger event', () => {
     expect(triggerHandler.event).toBe(events.trigger)
   })
 
-  it("Throws an error if the trigger object is invalid", () => {
+  it('Throws an error if the trigger object is invalid', () => {
     const badTriggerAction = {
       type: events.trigger,
       bolt: { trigger: 'foobar' }
     }
 
-    expect(() => triggerHandler.handler({
-      dispatch: mockDispatch,
-      options: mockOptions
-    })(badTriggerAction)).toThrowError(errors.triggerObjectMalformed)
+    expect(() =>
+      triggerHandler.handler({
+        dispatch: mockDispatch,
+        options: mockOptions
+      })(badTriggerAction)
+    ).toThrowError(errors.triggerObjectMalformed)
+
+    const anotherBadTriggerAction = {
+      type: events.trigger,
+      bolt: {
+        trigger: [
+          {
+            fn: 'something',
+            args: []
+          }
+        ]
+      }
+    }
+
+    expect(() =>
+      triggerHandler.handler({
+        dispatch: mockDispatch,
+        options: mockOptions
+      })(anotherBadTriggerAction)
+    ).toThrowError(errors.triggerObjectMalformed)
   })
 
-  it("Calls the listener with the passed arguments", () => {
+  it('Calls the listener with the passed arguments', () => {
     const triggerAction = {
       type: events.trigger,
       bolt: {
-        trigger: [{
-          listener: 'foobar',
-          args: ['Bolt']
-        }]
+        trigger: [
+          {
+            listener: 'foobar',
+            args: ['Bolt']
+          }
+        ]
       }
     }
 
@@ -44,10 +67,10 @@ describe('[Handler] triggerHandler', () => {
     })(triggerAction)
 
     expect(mockDispatch.mock.calls.length).toBe(1)
-    expect(mockOptions.listeners.foobar.mock.results[0].value).toBe('Hello, Bolt!')
+    expect(mockOptions.listeners.foobar.mock.results[0].value).toBe(
+      'Hello, Bolt!'
+    )
   })
 
-  it("Should call multiple listeners", () => {
-    
-  })
-});
+  it('Should call multiple listeners', () => {})
+})
