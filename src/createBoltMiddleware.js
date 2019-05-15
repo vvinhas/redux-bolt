@@ -51,7 +51,7 @@ const createBoltMiddleware = (socket, userOptions = {}) => {
         // If it's an object that is not a response
         // overrides the type property
         case 'object':
-          if (boltProp.type === types.receive) {
+          if (!boltProp.type || boltProp.type === types.receive) {
             return next(action)
           }
           break

@@ -11,3 +11,7 @@
 - Criar uma forma de extender handlers para novas actions (extensions)
   - Permitir ao dev passar handlers como Options
 - Atualizar o README
+- Considerar usar um debounce ou throttle no release da queue
+  - Talvez avaliar se ja existe no stack actions identicas a serem desachadas
+  - Talvez colocar um check somente em triggers
+  - Ou encapsular todos os listeners em debounce
