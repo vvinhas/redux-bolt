@@ -41,13 +41,15 @@ yarn add redux-bolt
 
 ```js
 import { createStore, applyMiddleware } from "redux"
+import io from 'socket.io-client'
 import { createBoltMiddleware } from "redux-bolt"
 import rootReducer from "../reducers"
 
-const boltMiddleware = createBoltMiddleware("http://socket-io-server")
+const socket = io('http://localhost:3001')
+const bolt = createBoltMiddleware(socket)
 const store = createStore(
     rootReducer,
-    applyMiddleware(boltMiddleware)
+    applyMiddleware(bolt)
 )
 ```
 That's it! You can already dispatch real time actions setting `bolt: true`
@@ -64,7 +66,7 @@ If you don't want `bolt` to be the property responsible for handling your real t
 ```js
 import { createBoltMiddleware } from "redux-bolt"
 
-const boltMiddleware = createBoltMiddleware("http://socket-io-server", {
+const boltMiddleware = createBoltMiddleware(socket, {
     propName: "socket"
 })
 ```
@@ -85,8 +87,8 @@ These are the available options you can set in `createBoltMiddleware`
 
 | Param | Description |
 | --- | --- |
-| `url` | The URL of your SocketIO server |
-| `options` | Options available: <ul><li>`socketOptions (object)`: SocketIO Client options. Please, refer to [SocketIO Documentation](https://socket.io/docs/client-api/#manager) for more information.</li><li>`propName (string)`: Property in your Redux Actions responsible for handling Bolt Actions. Default to `"bolt"`.</li><li>`queueInterval (number)`: The amount of miliseconds to check for connection. If there's no connection, Bolt put's your dispatched actions in a queue and release them after a connection is estabilished. Default is `1000`.</li></ul> |
+| `socket` | A SocketIO WebSocket |
+| `options` | Options available: <ul><li>`propName (string)`: Property in your Redux Actions responsible for handling Bolt Actions. Default to `"bolt"`.</li><li>`queueInterval (number)`: The amount of miliseconds to check for connection. If there's no connection, Bolt put's your dispatched actions in a queue and release them after a connection is estabilished. Default is `1000`.</li></ul> |
 
 ## Helpers
 
