@@ -1,35 +1,34 @@
 /**
  * Manage a queue of tasks waiting to be dispatched
  */
-export default class QueueManager
-{
+export default class QueueManager {
   /**
    * Constructor
    */
-  constructor() {
+  constructor () {
     this.stack = []
   }
 
   /**
    * Getter for the stack property
    * @return {array} The queue stack
-   */  
-  getStack() {
+   */
+  getStack () {
     return this.stack
   }
 
   /**
    * Clears the stack
-   */  
-  clearStack() {
+   */
+  clearStack () {
     this.stack = []
   }
 
   /**
    * Pushes the task to the queue stack
    * @param {*} task The task to be stacked
-   */  
-  push(task) {
+   */
+  push (task) {
     this.stack.push(task)
   }
 
@@ -38,8 +37,8 @@ export default class QueueManager
    * the filter function passed
    *
    * @param {function} dispatcher Filter function
-   */  
-  release(dispatcher) {
+   */
+  release (dispatcher) {
     this.stack = this.stack.filter(task => !dispatcher(task))
   }
 }

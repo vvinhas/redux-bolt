@@ -7,18 +7,18 @@ import * as Constants from '../constants'
  * @return {object|undefined} Bolt Object
  */
 const getBoltObject = action => {
-  return action[
-    Object.keys(action).find(prop => {
-      if (
-        action[prop] instanceof Object &&
-        action[prop].hasOwnProperty('type')
-      ) {
-        return Object.values(Constants.types).includes(action[prop].type)
-      }
+  const key = Object.keys(action).find(prop => {
+    if (
+      action[prop] instanceof Object &&
+      action[prop].hasOwnProperty('type')
+    ) {
+      return Object.values(Constants.types).includes(action[prop].type)
+    }
 
-      return false
-    })
-  ]
+    return false
+  })
+
+  return action[key]
 }
 
 export default getBoltObject

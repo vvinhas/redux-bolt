@@ -97,7 +97,7 @@ describe('createBoltMiddleware', () => {
   })
 
   it('Should thrown an exception when the handler has no event nor handler', () => {
-    const { socket, store, options } = mocks
+    const { socket, store } = mocks
     // 1st scenario: no handler
     expect(() =>
       createBoltMiddleware(socket, {
@@ -135,7 +135,7 @@ describe('createBoltMiddleware', () => {
   })
 
   it("Shouldn't use Bolt when bolt value is set to false", () => {
-    const { socket, store, next, options } = mocks
+    const { socket, store, next } = mocks
     createBoltMiddleware(socket)(store)(next)({
       type: 'BOLT_ACTION',
       bolt: false

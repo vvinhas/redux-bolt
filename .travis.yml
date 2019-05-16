@@ -3,6 +3,7 @@ node_js:
   - "node"
 script:
   - yarn run lint
+  - yarn run lint:test
   - yarn run test
 branches:
   only:
