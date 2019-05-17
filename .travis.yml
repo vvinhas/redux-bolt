@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - '8'
   - 'node'
 script:
   - yarn run lint:ci
@@ -11,5 +10,4 @@ after_success:
 branches:
   only:
     - master
-    - develop
 cache: yarn
