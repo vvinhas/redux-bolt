@@ -1,7 +1,8 @@
 # ⚡️ Redux Bolt
 
 [![Travis](https://img.shields.io/travis/vvinhas/redux-bolt.svg?style=flat-square)](https://travis-ci.org/vvinhas/redux-bolt?branch=master)
-![Coveralls github](https://img.shields.io/coveralls/github/vvinhas/redux-bolt.svg?style=flat-square)
+[![Code Climate coverage](https://img.shields.io/codeclimate/coverage/vvinhas/redux-bolt.svg?style=flat-square)](https://codeclimate.com/github/vvinhas/redux-bolt)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/vvinhas/redux-bolt.svg?style=flat-square)](https://codeclimate.com/github/vvinhas/redux-bolt)
 ![GitHub](https://img.shields.io/github/license/vvinhas/redux-bolt.svg?style=flat-square)
 [![npm](https://img.shields.io/npm/v/redux-bolt.svg?style=flat-square)](https://www.npmjs.com/package/redux-bolt)
 
