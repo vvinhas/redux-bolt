@@ -1,26 +1,27 @@
 # ⚡️ Redux Bolt
 
-[![Travis](https://img.shields.io/travis/vvinhas/redux-bolt.svg?style=flat-square)](https://travis-ci.org/vvinhas/redux-bolt)
+[![Travis](https://img.shields.io/travis/vvinhas/redux-bolt.svg?style=flat-square)](https://travis-ci.org/vvinhas/redux-bolt?branch=master)
 ![Coveralls github](https://img.shields.io/coveralls/github/vvinhas/redux-bolt.svg?style=flat-square)
+![GitHub](https://img.shields.io/github/license/vvinhas/redux-bolt.svg?style=flat-square)
 [![npm](https://img.shields.io/npm/v/redux-bolt.svg?style=flat-square)](https://www.npmjs.com/package/redux-bolt)
 
-**Bolt** is a small middleware for Redux that let's you dispatch Redux Actions to a server running SocketIO. Your actions will then be replicated to all clients listening to that socket or to a specific channel.
+**Bolt** is a small middleware for Redux that let's you dispatch marked Redux Actions to a server running SocketIO. Your actions will then be replicated to all clients listening to that socket or to a specific channel.
 
-**Bolt** allows you to configure it's behavior the way you want. You can chose the property name in your Redux Action responsible of controlling your real time actions and events you dispatch to the server.
+**Bolt** allows you to configure it's behavior the way you want. You can choose the property name in your Redux Action responsible of controlling your real time actions and events you dispatch to the server.
 
-This is a package for the client side only. Although not necessary, it's recommended that you also use [redux-bolt-server](http://github.com/vvinhas/redux-bolt-server) to easily handle Bolt Actions in your SocketIO Server. Please, checkout the package repository for more information.
+**Bolt** also comes with a [server side handler](http://github.com/vvinhas/redux-bolt-server) to to easily handle Bolt Actions in your SocketIO Server. Please, checkout the package repository for more information.
 
 ### WIP
 
-This package is under heavy development. Use it in a production environment is very risky and not recommended.
+This package is under heavy development. Using it in a production environment is very risky and not recommended.
 
 ## Motivation
 
-Redux offers the cool concept of actions that represent user interactions most of the time, so, why not take this interaction made by one user and replicate it to every other user connected to our app? This way, assuming that they all have the same state and a stable connection, the result of an action beign dispatched will be the same for every user.
+Creating real time applications can be very tedious and quickly become a truly nightmare due to the amount of sparsed events and the handle of these events. Redux offers an excelent way to centralize the state of an application in a single Store, where Actions are the only responsible to inform the Store how it should be updated.
 
-**Bolt** transforms these interactions into real time actions that runs through the reducers of every connected socket.
+**Bolt** makes use of this centralized platform provided by Redux to dispatch events to all your connected sockets, being easily integrated to the existent ecossystem of an application using Redux, turning the task to manage these real time events, trivial.
 
-**Bolt** use actions because they're lightweight and let reducers know how to change state. Since reducers are pure functions, if the action is the same, the result will be the same.
+**Bolt** use actions because they're lightweight and let reducers know how to change state, when necessary.
 
 ## Installation
 
@@ -46,7 +47,7 @@ import io from 'socket.io-client'
 import { createBoltMiddleware } from 'redux-bolt'
 import rootReducer from '../reducers'
 
-const socket = io('http://localhost:3001')
+const socket = io('http://localhost:3001') // The host running your SocketIO
 const bolt = createBoltMiddleware(socket)
 const store = createStore(rootReducer, applyMiddleware(bolt))
 ```
@@ -64,8 +65,6 @@ store.dispatch({
 If you don't want `bolt` to be the property responsible for handling your real time actions, you can set the option `propName` to whatever you want.
 
 ```js
-import { createBoltMiddleware } from 'redux-bolt'
-
 const boltMiddleware = createBoltMiddleware(socket, {
   propName: 'socket'
 })
@@ -85,10 +84,10 @@ store.dispatch({
 
 These are the available options you can set in `createBoltMiddleware`
 
-| Param     | Description                                                                                                                                                                                                                                                                                                                                                                               |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `socket`  | A SocketIO WebSocket                                                                                                                                                                                                                                                                                                                                                                      |
-| `options` | Options available: <ul><li>`propName (string)`: Property in your Redux Actions responsible for handling Bolt Actions. Default to `"bolt"`.</li><li>`queueInterval (number)`: The amount of miliseconds to check for connection. If there's no connection, Bolt put's your dispatched actions in a queue and release them after a connection is estabilished. Default is `1000`.</li></ul> |
+| Param     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `socket`  | A SocketIO WebSocket                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `options` | Options available: <ul><li>`propName (string)`: Property in your Redux Actions responsible for handling Bolt Actions. Default to `"bolt"`.</li><li>`queueManager (object)`: the queue manager object. Check the Queue Manager documentation for more information. Default is an instance of `QueueManager`</li><li>`queueInterval (number)`: The amount of miliseconds to check for connection. If there's no connection, Bolt put's your dispatched actions in a queue and release them after a connection is estabilished. Default is `1000`.</li><li>`listeners (object)`: an object containing the all your app listeners. Useful when your app uses thunks. Default to `{}`</li><li>`handlers (array)`: You can also set your own event handlers. To do that, check the Custom Handlers documentation. Default `[]`</li></ul> |
 
 ## Helpers
 
@@ -147,6 +146,10 @@ store.dispatch({
   bolt: toChannel('foobar')
 })
 ```
+
+## Contributing
+
+Soon.
 
 ## Challenges
 
