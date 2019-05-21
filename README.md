@@ -1,10 +1,10 @@
 # ⚡️ Redux Bolt
 
-[![Travis](https://img.shields.io/travis/vvinhas/redux-bolt.svg?style=flat-square)](https://travis-ci.org/vvinhas/redux-bolt?branch=master)
-[![Code Climate coverage](https://img.shields.io/codeclimate/coverage/vvinhas/redux-bolt.svg?style=flat-square)](https://codeclimate.com/github/vvinhas/redux-bolt)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/vvinhas/redux-bolt.svg?style=flat-square)](https://codeclimate.com/github/vvinhas/redux-bolt)
-![GitHub](https://img.shields.io/github/license/vvinhas/redux-bolt.svg?style=flat-square)
-[![npm](https://img.shields.io/npm/v/redux-bolt.svg?style=flat-square)](https://www.npmjs.com/package/redux-bolt)
+[![Travis](https://img.shields.io/travis/vvinhas/redux-bolt.svg?style=flat)](https://travis-ci.org/vvinhas/redux-bolt?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f209a61dedce92ca0331/maintainability)](https://codeclimate.com/github/vvinhas/redux-bolt/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f209a61dedce92ca0331/test_coverage)](https://codeclimate.com/github/vvinhas/redux-bolt/test_coverage)
+![GitHub](https://img.shields.io/github/license/vvinhas/redux-bolt.svg?style=flat)
+[![npm](https://img.shields.io/npm/v/redux-bolt.svg?style=flat)](https://www.npmjs.com/package/redux-bolt)
 
 **Bolt** is a small middleware for Redux that let's you dispatch marked Redux Actions to a server running SocketIO. Your actions will then be replicated to all clients listening to that socket or to a specific channel.
 
